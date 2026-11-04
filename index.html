@@ -1,0 +1,249 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SwiftPay International Bank</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;background:#f1f4f9;color:#18243a;font-family:Arial,sans-serif}
+header{background:#07152d;color:white;padding:22px 5%;display:flex;justify-content:space-between;align-items:center}
+.logo{font-size:23px;font-weight:bold;letter-spacing:1px}
+.logo span{color:#45b5ff}
+header small{display:block;font-size:10px;letter-spacing:2px;margin-top:5px}
+main{max-width:1050px;margin:35px auto;padding:15px}
+.hero{background:linear-gradient(120deg,#07152d,#13569b);color:white;padding:38px;border-radius:18px;margin-bottom:25px}
+.hero h1{font-size:34px;margin:0 0 12px}
+.hero p{color:#d2e5ff;line-height:1.7}
+button{background:#087ce5;color:white;border:0;padding:13px 20px;border-radius:8px;font-weight:bold;cursor:pointer;margin:5px 3px}
+button.secondary{background:#e8eef8;color:#15365c}
+button.danger{background:#b93d48}
+input{width:100%;padding:14px;margin:8px 0 14px;border:1px solid #ccd5e2;border-radius:8px;font-size:15px}
+.card{background:white;padding:24px;border-radius:14px;margin:15px 0;box-shadow:0 3px 15px #14243a0b}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:15px}
+.balance{background:linear-gradient(120deg,#0c2850,#087ce5);color:white}
+.balance h2{font-size:30px;margin:12px 0}
+.muted{color:#718096;font-size:13px}
+.hidden{display:none!important}
+.actions{display:flex;flex-wrap:wrap;gap:5px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+td,th{text-align:left;padding:12px 7px;border-bottom:1px solid #edf0f5}
+.notice{background:#fff5db;color:#795b13;padding:12px;border-radius:8px;font-size:12px;line-height:1.6}
+footer{text-align:center;color:#8591a4;padding:30px;font-size:12px}
+h2,h3{color:#152b49}
+label{font-size:13px;font-weight:bold}
+@media(max-width:600px){.grid{grid-template-columns:1fr}.hero{padding:25px}.hero h1{font-size:27px}main{margin:15px auto}header{padding:18px}}
+</style>
+</head>
+<body>
+
+<header>
+ <div class="logo">SWIFT<span>PAY</span>
+ <small>INTERNATIONAL BANK</small></div>
+ <div>🌐 Worldwide</div>
+</header>
+
+<main>
+<div class="notice">
+ DEMONSTRATION PLATFORM — No real money is held or transferred.
+ Do not enter real banking passwords, BVN, NIN or card details.
+</div>
+
+<section id="welcome">
+ <div class="hero">
+  <h1>Banking without boundaries.</h1>
+  <p>Experience a modern digital banking demonstration.
+  Simple account management, transaction previews and
+  convenient financial tools.</p>
+  <button onclick="show('register')">Open Demo Account</button>
+  <button class="secondary" onclick="show('login')">Sign In</button>
+ </div>
+ <div class="grid">
+  <div class="card"><h3>⚡ Fast Banking</h3><p class="muted">Explore a streamlined banking experience.</p></div>
+  <div class="card"><h3>🌍 Global Access</h3><p class="muted">A demonstration of worldwide digital banking.</p></div>
+  <div class="card"><h3>🔐 Privacy First</h3><p class="muted">Demo data stays in your browser.</p></div>
+  <div class="card"><h3>📊 Easy Tracking</h3><p class="muted">View your simulated transactions.</p></div>
+ </div>
+</section>
+
+<section id="register" class="card hidden">
+ <h2>Create Your Demo Account</h2>
+ <p class="muted">Use fictional information only.</p>
+ <form onsubmit="register(event)">
+  <label>Full name</label>
+  <input id="regname" required maxlength="60" placeholder="Enter demo name">
+  <label>Email address</label>
+  <input id="regemail" type="email" required placeholder="demo@example.com">
+  <label>Create password</label>
+  <input id="regpass" type="password" required minlength="6" placeholder="At least 6 characters">
+  <button type="submit">Create Account</button>
+  <button type="button" class="secondary" onclick="show('welcome')">Back</button>
+ </form>
+</section>
+
+<section id="login" class="card hidden">
+ <h2>Welcome Back</h2>
+ <form onsubmit="login(event)">
+  <label>Email address</label>
+  <input id="loginemail" type="email" required>
+  <label>Password</label>
+  <input id="loginpass" type="password" required>
+  <button type="submit">Sign In</button>
+  <button type="button" class="secondary" onclick="show('welcome')">Back</button>
+ </form>
+</section>
+
+<section id="dashboard" class="hidden">
+ <h2 id="greeting">My Dashboard</h2>
+ <p class="muted">Your SwiftPay demo banking overview.</p>
+ <div class="card balance">
+  <div>DEMO AVAILABLE BALANCE</div>
+  <h2 id="balance">₦0.00</h2>
+  <div>Demo account number</div>
+  <strong id="account"></strong>
+  <button class="secondary" onclick="copyAccount()">Copy Account Number</button>
+ </div>
+
+ <div class="grid">
+  <div class="card"><h3>👤 Profile</h3><p id="profile" class="muted"></p></div>
+  <div class="card"><h3>💳 Account Type</h3><p class="muted">SwiftPay Digital Demo Account</p></div>
+ </div>
+
+ <div class="card">
+  <h3>Banking Services</h3>
+  <div class="actions">
+   <button onclick="show('deposit')">＋ Deposit</button>
+   <button onclick="show('withdraw')">− Withdraw</button>
+   <button onclick="show('transfer')">↗ Transfer</button>
+   <button class="secondary" onclick="transactions()">History</button>
+  </div>
+ </div>
+
+ <div id="service" class="card hidden">
+  <h3 id="serviceTitle"></h3>
+  <form onsubmit="processTransaction(event)">
+   <label id="amountLabel">Amount (₦)</label>
+   <input id="amount" type="number" min="1" step="0.01" required placeholder="Enter amount">
+   <div id="recipientField" class="hidden">
+    <label>Demo recipient account number</label>
+    <input id="recipient" maxlength="10" placeholder="10-digit demo account">
+   </div>
+   <button type="submit">Confirm Demo Transaction</button>
+   <button type="button" class="secondary" onclick="hideService()">Cancel</button>
+  </form>
+  <p class="muted">This only changes your local demo balance. No actual payment occurs.</p>
+ </div>
+
+ <div class="card">
+  <h3>Recent Transactions</h3>
+  <div id="history"></div>
+ </div>
+ <button class="danger" onclick="logout()">Sign Out</button>
+</section>
+
+<footer>
+ SwiftPay International Bank · Digital Banking Demo<br>
+ Not a licensed financial institution. No real banking services.
+</footer>
+</main>
+
+<script>
+const KEY="swiftpay_demo_v1";
+let users=JSON.parse(localStorage.getItem(KEY)||"[]");
+let current=null;
+let serviceType="";
+
+function save(){localStorage.setItem(KEY,JSON.stringify(users))}
+function show(id){
+ ["welcome","register","login","dashboard"].forEach(x=>
+ document.getElementById(x).classList.add("hidden"));
+ document.getElementById("service").classList.add("hidden");
+ document.getElementById(id).classList.remove("hidden");
+}
+function register(e){
+ e.preventDefault();
+ const name=document.getElementById("regname").value.trim();
+ const email=document.getElementById("regemail").value.trim().toLowerCase();
+ const password=document.getElementById("regpass").value;
+ if(users.some(u=>u.email===email)){alert("Email already registered.");return}
+ let account;
+ do{account=String(Math.floor(1000000000+Math.random()*9000000000))}
+ while(users.some(u=>u.account===account));
+ current={name,email,password,account,balance:50000,transactions:[]};
+ current.transactions.push({type:"Welcome demo credit",amount:50000,date:new Date().toLocaleString()});
+ users.push(current);save();
+ alert("Demo account created successfully!");
+ dashboard();
+}
+function login(e){
+ e.preventDefault();
+ const email=document.getElementById("loginemail").value.trim().toLowerCase();
+ const password=document.getElementById("loginpass").value;
+ current=users.find(u=>u.email===email&&u.password===password);
+ if(!current){alert("Incorrect demo login details.");return}
+ dashboard();
+}
+function dashboard(){
+ show("dashboard");
+ document.getElementById("greeting").textContent="Welcome, "+current.name;
+ document.getElementById("profile").textContent=current.email;
+ document.getElementById("balance").textContent="₦"+Number(current.balance).toLocaleString("en-NG",{minimumFractionDigits:2});
+ document.getElementById("account").textContent=current.account;
+ transactions();
+}
+function copyAccount(){
+ navigator.clipboard?.writeText(current.account);
+ alert("Demo account number: "+current.account);
+}
+function service(type){
+ serviceType=type;
+ document.getElementById("serviceTitle").textContent=type+" Demo";
+ document.getElementById("amount").value="";
+ document.getElementById("recipient").value="";
+ document.getElementById("recipientField").classList.toggle("hidden",type!=="Transfer");
+ document.getElementById("service").classList.remove("hidden");
+}
+function hideService(){document.getElementById("service").classList.add("hidden")}
+function processTransaction(e){
+ e.preventDefault();
+ let amount=Number(document.getElementById("amount").value);
+ if(!Number.isFinite(amount)||amount<=0){alert("Enter a valid amount.");return}
+ if(amount>1000000){alert("Demo limit is ₦1,000,000 per transaction.");return}
+ if(serviceType==="Withdraw"||serviceType==="Transfer"){
+  if(amount>current.balance){alert("Insufficient demo balance.");return}
+ }
+ if(serviceType==="Transfer"){
+  let recipient=document.getElementById("recipient").value.trim();
+  if(!/^\d{10}$/.test(recipient)||recipient===current.account){
+   alert("Enter a different 10-digit demo account number.");return
+  }
+ }
+ if(serviceType==="Deposit")current.balance+=amount;
+ else current.balance-=amount;
+ current.transactions.unshift({
+  type:serviceType+(serviceType==="Transfer"?" to "+document.getElementById("recipient").value:""),
+  amount:amount,date:new Date().toLocaleString()
+ });
+ save();dashboard();hideService();
+ alert(serviceType+" demonstration completed. No real money moved.");
+}
+function transactions(){
+ let list=current.transactions.slice(0,10);
+ document.getElementById("history").innerHTML=list.length?
+ "<table><tr><th>Transaction</th><th>Amount</th><th>Date</th></tr>"+
+ list.map(t=>"<tr><td>"+escapeHTML(t.type)+"</td><td>₦"+Number(t.amount).toLocaleString("en-NG")+"</td><td>"+escapeHTML(t.date)+"</td></tr>").join("")+"</table>":
+ "<p class='muted'>No transactions yet.</p>";
+}
+function escapeHTML(s){
+ return String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+function logout(){current=null;show("welcome")}
+document.querySelectorAll("button").forEach(b=>{
+ if(b.textContent.includes("Deposit"))b.onclick=()=>service("Deposit");
+ if(b.textContent.includes("Withdraw"))b.onclick=()=>service("Withdraw");
+ if(b.textContent.includes("Transfer"))b.onclick=()=>service("Transfer");
+});
+</script>
+</body>
+</html>
